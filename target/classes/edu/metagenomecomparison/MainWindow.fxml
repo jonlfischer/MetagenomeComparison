@@ -59,6 +59,7 @@
                     <items>
                         <MenuItem fx:id="openMultiple" mnemonicParsing="false" text="From Multiple Files" />
                       <MenuItem fx:id="openMultipleMegan" mnemonicParsing="false" text="From MEGAN Comparison File" />
+                        <MenuItem fx:id="openMultipleFeature" mnemonicParsing="false" text="From (Qiime) Feature Table" />
                     </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Open Timeline">
@@ -73,30 +74,37 @@
                         </Menu>
                     </items>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="Export visualization">
+                  <Menu mnemonicParsing="false" text="Export Visualization">
                     <items>
                       <MenuItem fx:id="exportMainMenu" mnemonicParsing="false" text="Main tab" />
                         <MenuItem fx:id="exportOpenTabsMenu" mnemonicParsing="false" text="All open tabs" />
-                        <MenuItem fx:id="exportTimelineMenu" mnemonicParsing="false" text="Timeline as video" />
+                        <MenuItem fx:id="exportTimelineMenu" disable="true" mnemonicParsing="false" text="Timeline as video" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Export Data">
+                    <items>
+                      <MenuItem fx:id="exportSelectedMenu" mnemonicParsing="false" text="Selected Nodes" />
+                        <MenuItem fx:id="exportVisibleMenu" mnemonicParsing="false" text="Visible Nodes" />
                     </items>
                   </Menu>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
           <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
+            <MenuItem fx:id="undoMenu" mnemonicParsing="false" text="Undo">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            <MenuItem fx:id="redoMenu" mnemonicParsing="false" text="Redo">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
+            <MenuItem fx:id="selectAllMenu" mnemonicParsing="false" text="Select All" />
+            <MenuItem fx:id="unselectAllMenu" mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="View">
+            <Menu mnemonicParsing="false" text="Tree View">
               <items>
                   <CheckMenuItem fx:id="showLabels" mnemonicParsing="false" selected="true" text="Show labels" />
                   <SeparatorMenuItem mnemonicParsing="false" />
@@ -129,11 +137,13 @@
                   <MenuItem fx:id="selectTabsToShowMenu" disable="true" mnemonicParsing="false" text="Select Tabs to show..." />
               </items>
             </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-          </items>
-        </Menu>
+            <Menu mnemonicParsing="false" text="Options">
+              <items>
+                  <MenuItem fx:id="reopenSelectionInfoMenu" mnemonicParsing="false" text="Reopen Selection Info" />
+                  <CheckMenuItem fx:id="doDarkMode" mnemonicParsing="false" text="Dark Mode" />
+                <MenuItem fx:id="settingsMenu" mnemonicParsing="false" text="Settings" />
+              </items>
+            </Menu>
       </menus>
     </MenuBar>
       <ToolBar fx:id="bottomToolBar" prefHeight="50.0">

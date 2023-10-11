@@ -70,7 +70,6 @@ public class SelectTabsDialog extends Dialog<GraphTab[][]> {
                             CheckBox checkBox = new CheckBox(tabName);
                             pairwiseGridPane.add(checkBox, i, j);
                             checkBoxesPairwise[i][j] = checkBox;
-                            //TODO change indexing because empty column 0
             }
         }
 

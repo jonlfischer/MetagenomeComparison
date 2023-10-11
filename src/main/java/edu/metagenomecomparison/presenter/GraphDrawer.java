@@ -1,8 +1,10 @@
 package edu.metagenomecomparison.presenter;
 
 import edu.metagenomecomparison.model.ComparativeTreeNode;
-import edu.metagenomecomparison.model.GraphLayout;
+import edu.metagenomecomparison.model.layout.GraphLayout;
 import edu.metagenomecomparison.model.TaxonRank;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import edu.metagenomecomparison.presenter.Coloring.ColorScale;
@@ -60,31 +62,45 @@ public class GraphDrawer {
             t.setText(v.makeTooltip());
             Tooltip.install(c, t);
             Text text = new Text(v.getLabel());
-            //TODO set font size according to rank
             TaxonRank fontSizeRank = v.getRank();
             ComparativeTreeNode u = v;
             while (fontSizeRank == TaxonRank.NORANK){
                 fontSizeRank = ((ComparativeTreeNode) u.getParent()).getRank();
                 u = (ComparativeTreeNode) u.getParent();
             }
-            text.setFont(new Font(TaxonRank.taxonRankToFontSize().get(fontSizeRank)));
+            int divider = isMainGraph ? 1 : 2;
+            text.setFont(new Font(TaxonRank.taxonRankToFontSize().get(fontSizeRank) / divider));
             text.setX(x);
             text.setY(y);
             text.setX(text.getX() - text.getLayoutBounds().getWidth() / 2);
             text.setY(text.getY() + text.getLayoutBounds().getHeight() / 4);
-            text.setStroke(Color.WHITE);
-            text.setStrokeWidth(0.3);
             text.setFill(Color.BLACK);
-            text.visibleProperty().bind(v.getCircle().visibleProperty());
-            text.onMouseClickedProperty().bind(c.onMouseClickedProperty());
 
-            text.opacityProperty().bind(new DoubleBinding() {
-                {super.bind(text.opacityProperty(), c.fillProperty());}
-                @Override
-                protected double computeValue() {
-                    return ((Color) c.fillProperty().get()).getOpacity();
-                }
-            });
+            if (isMainGraph) {
+                /*
+                text.setStroke(Color.WHITE);
+                text.setStrokeWidth((double) TaxonRank.taxonRankToFontSize().get(fontSizeRank) / 20);
+                */
+                text.visibleProperty().bind(v.getCircle().visibleProperty());
+            }
+            text.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent mouseEvent) {
+                            c.fireEvent(mouseEvent);
+                        }
+                    });
+                    //text.onMouseClickedProperty().bind(c.onMouseClickedProperty());
+
+                    text.opacityProperty().bind(new DoubleBinding() {
+                        {
+                            super.bind(text.opacityProperty(), c.fillProperty());
+                        }
+
+                        @Override
+                        protected double computeValue() {
+                            return ((Color) c.fillProperty().get()).getOpacity();
+                        }
+                    });
 
             t.setStyle("-fx-font-size: 14");
             Tooltip.install(text, t);

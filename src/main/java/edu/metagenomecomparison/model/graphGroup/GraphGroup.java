@@ -1,7 +1,7 @@
 package edu.metagenomecomparison.model.graphGroup;
 
 import edu.metagenomecomparison.model.ComparativeTreeNode;
-import edu.metagenomecomparison.model.GraphLayout;
+import edu.metagenomecomparison.model.layout.GraphLayout;
 import jloda.graph.Graph;
 import jloda.phylo.PhyloTree;
 import edu.metagenomecomparison.presenter.Coloring.ColorScale;

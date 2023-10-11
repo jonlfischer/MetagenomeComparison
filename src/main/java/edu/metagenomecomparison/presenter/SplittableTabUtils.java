@@ -1,7 +1,7 @@
 package edu.metagenomecomparison.presenter;
 
 import edu.metagenomecomparison.model.ComparativeTreeNode;
-import edu.metagenomecomparison.model.GraphLayout;
+import edu.metagenomecomparison.model.layout.GraphLayout;
 import edu.metagenomecomparison.model.graphGroup.MultipleAbundancyGraphGroup;
 import edu.metagenomecomparison.model.graphGroup.PairwiseComparisonGraphGroup;
 import edu.metagenomecomparison.presenter.Coloring.ColorScaleLegendPane;
@@ -55,7 +55,8 @@ public class SplittableTabUtils {
         GraphTab[][] squareTabs = new GraphTab[maxI][maxI];
         for (int i = 0; i < maxI; i++){
             for (int j = 0; j < maxI; j++){
-                squareTabs[i][j] = tabs[j * maxI + i];
+                if (j * maxI + i < tabs.length)
+                    squareTabs[i][j] = tabs[j * maxI + i];
             }
         }
         for (int i = 0; i < maxI; i++){
@@ -85,6 +86,7 @@ public class SplittableTabUtils {
                 if (toShowTabs[i][j] != null) {
                     int id1 = ((ComparativeTreeNode) tree.getRoot()).getSampleNameToId().get(files[i]);
                     int id2 = ((ComparativeTreeNode) tree.getRoot()).getSampleNameToId().get(files[j]);
+                    toShowTabs[i][j].setGraphGroup(graphGroup);
                     toShowTabs[i][j].addContent(graphGroup.representationWithLogColorsBetween(id1, id2).getAllLabelsInvisible());
                     toShowUnstacked[k] = toShowTabs[i][j];
                     k++;
@@ -106,6 +108,7 @@ public class SplittableTabUtils {
         for (int i = 0; i < toShowTabs[0].length; i++){
             if(toShowTabs[0][i] != null) {
                 int id1 = ((ComparativeTreeNode) tree.getRoot()).getSampleNameToId().get(files[i]);
+                toShowTabs[0][i].setGraphGroup(multipleAbundancyGraphGroup);
                 toShowTabs[0][i].addContent(multipleAbundancyGraphGroup.representationOfSampleId(id1).getAllLabelsInvisible());
                 toShowUnstacked[c] = toShowTabs[0][i];
                 c++;
@@ -114,7 +117,13 @@ public class SplittableTabUtils {
         return Arrays.copyOfRange(toShowUnstacked, 0, c);
     }
 
-
+    public static void repopulateTabs(GraphTab[][] tabs){
+        for (int i = 0; i < tabs.length; i++){
+            for(int j = 0; j< tabs.length; j++){
+                tabs[i][j].repopulateContent();
+            }
+        }
+    }
 
 
 }

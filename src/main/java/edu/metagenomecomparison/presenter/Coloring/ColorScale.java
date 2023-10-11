@@ -39,9 +39,11 @@ public abstract class ColorScale {
             double value = MAX - (MAX - MIN) * y / height;
             Color color = getValueColor(value);
             for (int x = 0; x < width / 2; x++) {
-                if (y % 10 == 0 && x > width * 0.4)
+                if ((y % (height / 10) == 0 || y == height - 1)
+                        && x > width * 0.4)
                     pixelWriter.setColor(x, y, Color.BLACK);
-                pixelWriter.setColor(x, y, color);
+                else
+                    pixelWriter.setColor(x, y, color);
                 //TODO this is pretty naiive
             }
         }

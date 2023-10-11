@@ -1,5 +1,7 @@
 package edu.metagenomecomparison.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.MouseEvent;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
@@ -27,7 +29,7 @@ public class ComparativeTreeNode extends Node {
     private boolean childrenVisible;
 
     public boolean isChildrenVisible() {
-        return childrenVisible;
+        return childrenVisibleProperty.get();
     }
 
     public Circle getCircle() {
@@ -50,8 +52,9 @@ public class ComparativeTreeNode extends Node {
 
     private int totalSummed;
 
-    //TODO implement rank
     private TaxonRank rank;
+
+    private SimpleBooleanProperty childrenVisibleProperty;
 
     /**
      * sets the path in a tree to this node
@@ -76,6 +79,7 @@ public class ComparativeTreeNode extends Node {
         numSamples = 0;
         childrenVisible = true;
         isVisible = true;
+        this.childrenVisibleProperty = new SimpleBooleanProperty(childrenVisible);
     }
 
     private Pair<Integer, Integer> ZEROS() {
@@ -95,14 +99,23 @@ public class ComparativeTreeNode extends Node {
     public Circle makeCircle(double x, double y, double radius, boolean isMainGraph) {
         if (isMainGraph){
             circle = new Circle(x, y, radius);
-            circle.setOnMouseClicked(e -> toggleVisibility());
+            circle.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                if (e.isControlDown())
+                    toggleVisibility();
+            });
             return circle;
         }
             else {
                 Circle newCircle = new Circle(x, y, radius);
                 newCircle.visibleProperty().bind(circle.visibleProperty());
+                newCircle.strokeProperty().bind(circle.strokeProperty());
                 return newCircle;
         }
+    }
+
+
+    public SimpleBooleanProperty getChildrenVisibleProperty(){
+        return this.childrenVisibleProperty;
     }
 
     public void changeColor(Color color) {
@@ -117,6 +130,7 @@ public class ComparativeTreeNode extends Node {
         isVisible = visible;
     }
 
+
     /**
      * make all nodes below this node invisible
      */
@@ -127,12 +141,12 @@ public class ComparativeTreeNode extends Node {
             public void accept(Node node) {
                 ComparativeTreeNode v = (ComparativeTreeNode) node;
                 if (v != start) {
-                    v.circle.setVisible(!start.childrenVisible);
+                    v.circle.setVisible(!start.childrenVisibleProperty.get());
                     v.isVisible = !v.isVisible;
                 }
             }
         });
-        this.childrenVisible = !childrenVisible;
+        this.childrenVisibleProperty.set(!this.childrenVisibleProperty.get());
     }
 
     /**
@@ -192,7 +206,7 @@ public class ComparativeTreeNode extends Node {
     /**
      * this is the sum of reads of the children without own assigned reads, which should be usually not used
      */
-    protected int getSummedForTraversal(int sampleId) {
+    public int getSummedForTraversal(int sampleId) {
         if (data.get(sampleId) == null) return 0;
         return data.get(sampleId).getSecond();
     }
@@ -223,6 +237,8 @@ public class ComparativeTreeNode extends Node {
         }
     }
 
+
+
     /**
      * get the number of samples/files that the tree this node is in contains
      *
@@ -235,7 +251,7 @@ public class ComparativeTreeNode extends Node {
     public Double getLogAbundancies(int sampleId1, int sampleId2, boolean summed) {
             double numerator = summed ? getSummed(sampleId1) : getAssigned(sampleId1);
             double denum = summed ? getSummed(sampleId2) : getAssigned(sampleId2);
-            if (numerator == 0 && denum == 0) //TODO this should be a different case than when is present equally in both
+            if (numerator == 0 && denum == 0)
                 return null;
             if (numerator == 0)
                 return Math.log((double) 1 / (1.2 * denum));
@@ -265,7 +281,6 @@ public class ComparativeTreeNode extends Node {
             stringBuilder.append("Summarized reads: ").append(getSummed(value));
         }
         return stringBuilder.toString();
-        //TODO include log abundancies if numsamples == 2
     }
 
     //TODO include relative summed and assigned probabilities

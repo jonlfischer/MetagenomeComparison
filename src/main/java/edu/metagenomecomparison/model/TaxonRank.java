@@ -28,6 +28,21 @@ public enum TaxonRank implements Comparable<TaxonRank>{
         return map;
     }
 
+    public static HashMap<TaxonRank, String> taxonRankMapRev(){
+        HashMap<TaxonRank, String> map = new HashMap<>();
+        map.put(DOMAIN, "d");
+        map.put(KINGDOM, "k");
+        map.put(PHYLUM, "p");
+        map.put(CLASS, "c");
+        map.put(ORDER, "o");
+        map.put(FAMILY, "f");
+        map.put(GENUS, "g");
+        map.put(SPECIES, "s");
+        map.put(NORANK, "0");
+        map.put(ROOT, "0");
+        return map;
+    }
+
     public static HashMap<TaxonRank, Integer> taxonRankToFontSize(){
         HashMap<TaxonRank, Integer> map = new HashMap<>();
         map.put(ROOT, 20);
